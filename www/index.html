@@ -12,7 +12,7 @@
   <header class="topbar">
     <div class="brand-mark" aria-hidden="true">T</div>
     <div><strong>TARA</strong><small>Postal Research &amp; Guidance Assistant</small></div>
-    <button id="check-api" class="status" type="button" aria-label="Check backend connection">Check API</button>
+    <button id="check-api" class="status" type="button" aria-label="Check backend connection"><span id="api-status">Checking API…</span></button>
   </header>
   <main>
     <section class="welcome">
@@ -43,16 +43,16 @@
     <section class="panel">
       <h2>Workspace modules</h2>
       <div class="module-grid">
-        <div class="module"><b>Delivery</b><small>D+0 and delivery reports</small></div>
-        <div class="module"><b>Mechanized</b><small>Fuel and bill workflows</small></div>
-        <div class="module"><b>BYOD</b><small>Device and bill tracking</small></div>
-        <div class="module"><b>Mail Operations</b><small>G2 mails monitoring</small></div>
+        <button class="module" data-prompt="Prepare a D+0 delivery performance review. Ask me for the figures you need."><b>Delivery</b><small>D+0 and delivery reports · Tap to start</small></button>
+        <button class="module" data-prompt="Help me prepare a mechanized delivery fuel reimbursement bill. Ask for required figures and rules."><b>Mechanized</b><small>Fuel and bill workflows · Tap to start</small></button>
+        <button class="module" data-prompt="Create a BYOD device and monthly bill tracking checklist for India Post."><b>BYOD</b><small>Device and bill tracking · Tap to start</small></button>
+        <button class="module" data-prompt="Help with G2 Mails branch operations and draft an official office note or letter as needed."><b>Mail Operations</b><small>G2 mails monitoring · Tap to start</small></button>
       </div>
       <p class="notice">These modules are still starter panels. Full desktop workflows and Supabase sync are not yet ported.</p>
     </section>
   </main>
   <footer>Keep departmental data and credentials secure.</footer>
   <script src="app.js"></script>
-  <script>document.getElementById('check-api').addEventListener('click', () => window.TARA_CHECK_API && window.TARA_CHECK_API());</script>
+  <script>document.getElementById("check-api").addEventListener("click", () => window.TARA_CHECK_API && window.TARA_CHECK_API()); document.querySelectorAll("[data-prompt]").forEach(el => el.addEventListener("click", () => { document.getElementById("question").value = el.dataset.prompt; document.getElementById("question").focus(); document.getElementById("question").scrollIntoView({behavior:"smooth",block:"center"}); }));</script>
 </body>
 </html>
