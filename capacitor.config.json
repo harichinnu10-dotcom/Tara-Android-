@@ -1,0 +1,8 @@
+{
+  "appId": "in.gov.tara.assistant",
+  "appName": "TARA",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
