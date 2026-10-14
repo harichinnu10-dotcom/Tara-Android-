@@ -12,7 +12,7 @@
   <header class="topbar">
     <div class="brand-mark" aria-hidden="true">T</div>
     <div><strong>TARA</strong><small>Postal Research &amp; Guidance Assistant</small></div>
-    <span id="api-status" class="status">API not checked</span>
+    <button id="check-api" class="status" type="button" aria-label="Check backend connection">Check API</button>
   </header>
   <main>
     <section class="welcome">
@@ -30,15 +30,15 @@
         <button id="speak" class="secondary" type="button">🔊 Speak greeting</button>
         <button id="listen" type="button">🎙 Start voice input</button>
       </div>
-      <p id="voice-status" class="muted" role="status">Voice support depends on the Android WebView and installed speech services.</p>
+      <p id="voice-status" class="muted" role="status">If in-app voice input is unavailable, use the microphone on your Android keyboard.</p>
     </section>
     <section class="panel">
       <h2>Ask TARA</h2>
-      <p class="muted">The mobile shell is connected to the project workflow. AI answers are not enabled until a supported provider and secure backend route are configured.</p>
+      <p class="muted">Ask for office-note drafts, official letters, delivery-performance summaries, or simple calculations. Do not enter passwords or confidential personal data.</p>
       <label for="question">Your question</label>
-      <textarea id="question" rows="3" placeholder="e.g. Prepare a brief note on delivery performance…"></textarea>
-      <button id="send" type="button" class="full">Check backend connection</button>
-      <pre id="answer" class="answer" aria-live="polite">TARA is ready for setup.</pre>
+      <textarea id="question" rows="4" placeholder="e.g. Draft a brief office note on delivery performance…"></textarea>
+      <button id="send" type="button" class="full">Ask TARA</button>
+      <pre id="answer" class="answer" aria-live="polite">TARA is ready. Checking backend connection…</pre>
     </section>
     <section class="panel">
       <h2>Workspace modules</h2>
@@ -48,10 +48,11 @@
         <div class="module"><b>BYOD</b><small>Device and bill tracking</small></div>
         <div class="module"><b>Mail Operations</b><small>G2 mails monitoring</small></div>
       </div>
-      <p class="notice">These are starter screens only. Existing Electron desktop functions have not yet been ported to Android.</p>
+      <p class="notice">These modules are still starter panels. Full desktop workflows and Supabase sync are not yet ported.</p>
     </section>
   </main>
   <footer>Keep departmental data and credentials secure.</footer>
   <script src="app.js"></script>
+  <script>document.getElementById('check-api').addEventListener('click', () => window.TARA_CHECK_API && window.TARA_CHECK_API());</script>
 </body>
 </html>
