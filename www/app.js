@@ -113,4 +113,5 @@ $('send').addEventListener('click', async () => {
   }
 });
 
+window.TARA_CHECK_API = () => checkBackend(true);
 checkBackend(false);
