@@ -75,7 +75,7 @@ app.post('/api/ask', async (req, res) => {
         headers: { 'x-goog-api-key': apiKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: systemInstruction }] },
-          contents: [{ role: 'user', parts: [{ text: (language === 'te-IN' ? 'Respond in Telugu.\\n\\n' : 'Respond in clear Indian English.\\n\\n') + question }] }],
+          contents: [{ role: 'user', parts: [{ text: (language === 'te-IN' ? 'Respond in Telugu.\n\n' : 'Respond in clear Indian English.\n\n') + question }] }],
           generationConfig: { maxOutputTokens: 900, temperature: 0.3 }
         }),
         signal: AbortSignal.timeout(45000)
@@ -85,7 +85,7 @@ app.post('/api/ask', async (req, res) => {
         const detail = data?.error?.message || 'Google Gemini request failed.';
         return res.status(502).json({ ok: false, message: 'Google Gemini API error: ' + detail });
       }
-      answer = (data.candidates?.[0]?.content?.parts || []).map(part => part.text || '').join('\\n').trim();
+      answer = (data.candidates?.[0]?.content?.parts || []).map(part => part.text || '').join('\n').trim();
       if (!answer) return res.status(502).json({ ok: false, message: 'Google Gemini returned no text. Check model access and API quota.' });
       return res.json({ ok: true, mode: 'ai', provider: 'gemini', answer });
     }
@@ -116,7 +116,7 @@ app.post('/api/ask', async (req, res) => {
       .flatMap(item => item.content || [])
       .filter(item => item.type === 'output_text')
       .map(item => item.text)
-      .join('\\n').trim();
+      .join('\n').trim();
     if (!answer) return res.status(502).json({ ok: false, message: 'AI provider returned an empty answer.' });
     return res.json({ ok: true, mode: 'ai', provider: 'openai', answer });
   } catch (error) {
