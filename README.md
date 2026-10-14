@@ -16,6 +16,15 @@ TARA (Postal Research, Guidance & Management Assistant) — Android companion pr
 
 The mobile UI currently is a **starter shell**, not a complete port of the desktop app. The supplied Electron project uses `window.tara.invoke` and Node/Electron APIs; those need a proper Android-compatible service layer before desktop functions will work.
 
+## Build a debug APK with GitHub Actions
+
+1. Open the repository and select the **Actions** tab.
+2. Select **Build TARA Android APK**.
+3. Tap **Run workflow** on branch `main`.
+4. When the run succeeds, open that run and download the `TARA-debug-apk` artifact. The artifact is a test/debug APK, not a Play Store release build.
+
+The workflow generates the native Android project during CI. It does not yet include the original Electron-only integrations.
+
 ## Deploy the backend to Render
 
 1. In Render, choose **New → Blueprint** and select this repository.
