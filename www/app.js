@@ -25,21 +25,28 @@ function speak(text) {
 async function checkBackend(showResult = false) {
   if (!apiBase || apiBase.includes('YOUR-RENDER-SERVICE')) {
     setApiStatus('Not configured');
-    if (showResult) $('answer').textContent = 'Render URL is not configured.';
-    return false;
+    if (showResult) $('answer').textContent = 'Render URL is not configured in www/config.js.';
+    return null;
   }
   setApiStatus('Checking…');
   try {
     const response = await fetch(apiBase + '/health', { method: 'GET', cache: 'no-store' });
-    const data = await response.json();
-    if (!response.ok || !data.ok) throw new Error('Health check returned HTTP ' + response.status);
-    setApiStatus('API online');
-    if (showResult) $('answer').textContent = 'Connected to TARA backend.\nService: ' + data.service + '\nStatus: healthy';
-    return true;
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+      throw new Error('Health endpoint returned HTTP ' + response.status + (data.message ? ': ' + data.message : ''));
+    }
+    setApiStatus(data.aiConfigured ? 'API online · AI configured' : 'API online · templates only');
+    if (showResult) {
+      $('answer').textContent = 'Connected to TARA backend.\nService: ' + (data.service || 'unknown') +
+        '\nStatus: healthy\nAI configured: ' + (data.aiConfigured ? 'yes' : 'no') +
+        '\nProvider: ' + (data.aiProvider || 'not reported');
+    }
+    return data;
   } catch (error) {
     setApiStatus('API offline');
-    if (showResult) $('answer').textContent = 'Could not connect to Render. Open ' + apiBase + '/health in your browser to test it.\nDetails: ' + error.message;
-    return false;
+    if (showResult) $('answer').textContent = 'Could not verify the TARA backend at ' + apiBase +
+      '.\nDetails: ' + error.message + '\nOpen ' + apiBase + '/health in a browser to check the deployed service.';
+    return null;
   }
 }
 
@@ -90,23 +97,47 @@ $('send').addEventListener('click', async () => {
     $('question').focus();
     return;
   }
+  if (!apiBase) {
+    setApiStatus('Not configured');
+    $('answer').textContent = 'TARA backend URL is missing. Set apiBaseUrl in www/config.js.';
+    return;
+  }
+
   $('send').disabled = true;
   $('send').textContent = 'Working…';
-  $('answer').textContent = 'Connecting to TARA…';
+  $('answer').textContent = 'Checking TARA connection…';
   try {
+    const health = await checkBackend(false);
+    if (!health) throw new Error('The backend health check failed. The service may be sleeping, unavailable, or protected by a proxy.');
+    $('answer').textContent = health.aiConfigured
+      ? 'Connected. Sending your question to ' + (health.aiProvider || 'the AI provider') + '…'
+      : 'Backend is online, but no AI provider key is configured. TARA can only return quick templates until the backend key is set.';
+
     const response = await fetch(apiBase + '/api/ask', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ question, language: lang() })
     });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.message || 'Request failed (HTTP ' + response.status + ')');
-    setApiStatus('API online');
+    const data = await response.json().catch(async () => ({ message: (await response.text().catch(() => '')).slice(0, 500) }));
+    if (!response.ok) {
+      let detail = data.message || data.error || 'Request failed (HTTP ' + response.status + ')';
+      if (response.status === 401) {
+        detail = 'HTTP 401 Unauthorized. The deployed endpoint or proxy is rejecting the request before TARA can answer. Verify the Render service URL and deployment; do not put AI API keys in the Android app.';
+      } else if (response.status === 403) {
+        detail = 'HTTP 403 Forbidden. The server or proxy is blocking this request.';
+      } else if (response.status === 502) {
+        detail = data.message || 'HTTP 502: the backend could not get a response from its configured AI provider. Check the provider key and Render logs.';
+      }
+      throw new Error(detail);
+    }
+    setApiStatus(health.aiConfigured ? 'AI connected' : 'Template mode');
     $('answer').textContent = (data.mode === 'template' ? 'TARA quick template (not AI-generated):\n\n' : '') + (data.answer || 'No answer was returned.');
     if (data.answer) speak(data.answer);
   } catch (error) {
-    setApiStatus('API error');
-    $('answer').textContent = 'TARA could not answer this request.\n' + error.message + '\n\nCheck that Render is deployed with the latest backend code.';
+    setApiStatus('Connection error');
+    $('answer').textContent = 'TARA could not answer this request.\n' + error.message +
+      '\n\nConnection check completed against: ' + apiBase +
+      '\nIf this is HTTP 401, the deployed service/proxy is rejecting access; changing the APK alone cannot fix server authorization.';
   } finally {
     $('send').disabled = false;
     $('send').textContent = 'Ask TARA';
