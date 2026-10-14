@@ -1,0 +1,19 @@
+{
+  "name": "tara-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TARA Android companion app with a Render API backend",
+  "scripts": {
+    "start": "npm --prefix backend start",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
