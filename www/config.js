@@ -1,5 +1,4 @@
-// Replace apiBaseUrl after deploying the Render service. Keep this URL public;
-// never place API keys or Supabase service-role secrets in this file.
+// Public Render URL only. Never put API keys or Supabase secrets in this file.
 window.TARA_CONFIG = {
-  apiBaseUrl: 'https://YOUR-RENDER-SERVICE.onrender.com'
+  apiBaseUrl: 'https://tara-ai-w1fy.onrender.com'
 };
