@@ -2,25 +2,48 @@
 
 TARA (Postal Research, Guidance & Management Assistant) — Android companion project for the G2 – Mails workspace.
 
-## Status
+## Current implementation status
 
-This repository is being set up. The initial commit only documents the project; it is not yet a complete Android app.
+- [x] GitHub repository write access verified
+- [x] Capacitor project configuration added
+- [x] Mobile-first TARA starter screen added
+- [x] English/Telugu text-to-speech and optional browser speech-recognition hooks added
+- [x] Render Blueprint and Express health endpoint added
+- [ ] Existing Electron desktop features ported to Android
+- [ ] AI provider route and authentication
+- [ ] Supabase authentication and data sync
+- [ ] APK built and tested on a physical device
 
-## Planned components
+The mobile UI currently is a **starter shell**, not a complete port of the desktop app. The supplied Electron project uses `window.tara.invoke` and Node/Electron APIs; those need a proper Android-compatible service layer before desktop functions will work.
 
-- Android app shell with English and Telugu voice interaction
-- G2 – Mails workspace and departmental workflows
-- Supabase-backed sync (credentials must be configured securely)
-- Optional backend service deployed on Render
-- AI provider integration using an officially supported authentication/API method
+## Deploy the backend to Render
 
-## Important
+1. In Render, choose **New → Blueprint** and select this repository.
+2. Render reads `render.yaml` and deploys the `tara-api` service from `backend/`.
+3. After deployment, open `https://YOUR-SERVICE.onrender.com/health`. A healthy response contains `"ok": true`.
+4. Update `www/config.js` with the actual HTTPS service URL, without a trailing slash.
+5. Commit the updated configuration. Do not add secrets to `www/config.js`.
 
-A ChatGPT subscription is not an unlimited API credential. Do not embed API keys, Supabase service-role keys, or other secrets in the Android app or commit them to GitHub.
+## Build the Android project
 
-## Next steps
+Requirements: Node.js 20 or newer and Android Studio with an Android SDK installed.
 
-1. Add the Android app source and build configuration.
-2. Add the backend service and Render deployment configuration.
-3. Configure Supabase URL and public anon key through environment/app configuration; keep service-role secrets server-side.
-4. Build and test the APK on a real Android device.
+```bash
+npm install
+npx cap add android
+npx cap sync android
+npx cap open android
+```
+
+In Android Studio, allow Gradle sync, then select **Build → Build APK(s)**. This builds the current starter shell only; it does not mean the desktop integrations are ported.
+
+## Security and AI
+
+- Never commit OpenAI/API keys, Supabase service-role keys, passwords, or private departmental data.
+- Keep privileged keys on the backend in Render environment variables.
+- A ChatGPT subscription is not a general-purpose API key. AI must use a supported authentication/API integration; subscription sharing cannot be assumed to work or be unlimited.
+- Do not connect live departmental data until authentication, authorization, and access controls have been implemented and tested.
+
+## Next development milestone
+
+Port the original Electron functions into Android-safe modules: document import/export using Android file pickers, a secure AI backend route, and authenticated Supabase sync. Then test on-device before enabling operational workflows.
