@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101722">
+  <title>TARA — Postal Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark" aria-hidden="true">T</div>
+    <div><strong>TARA</strong><small>Postal Research &amp; Guidance Assistant</small></div>
+    <span id="api-status" class="status">API not checked</span>
+  </header>
+  <main>
+    <section class="welcome">
+      <p class="eyebrow">G2 · MAILS WORKSPACE</p>
+      <h1>Good to have you here.</h1>
+      <p class="muted">Your mobile companion for Postal Department workflows.</p>
+    </section>
+    <section class="panel">
+      <label for="language">Voice language</label>
+      <select id="language">
+        <option value="en-IN">English (India)</option>
+        <option value="te-IN">తెలుగు (Telugu)</option>
+      </select>
+      <div class="voice-row">
+        <button id="speak" class="secondary" type="button">🔊 Speak greeting</button>
+        <button id="listen" type="button">🎙 Start voice input</button>
+      </div>
+      <p id="voice-status" class="muted" role="status">Voice support depends on the Android WebView and installed speech services.</p>
+    </section>
+    <section class="panel">
+      <h2>Ask TARA</h2>
+      <p class="muted">The mobile shell is connected to the project workflow. AI answers are not enabled until a supported provider and secure backend route are configured.</p>
+      <label for="question">Your question</label>
+      <textarea id="question" rows="3" placeholder="e.g. Prepare a brief note on delivery performance…"></textarea>
+      <button id="send" type="button" class="full">Check backend connection</button>
+      <pre id="answer" class="answer" aria-live="polite">TARA is ready for setup.</pre>
+    </section>
+    <section class="panel">
+      <h2>Workspace modules</h2>
+      <div class="module-grid">
+        <div class="module"><b>Delivery</b><small>D+0 and delivery reports</small></div>
+        <div class="module"><b>Mechanized</b><small>Fuel and bill workflows</small></div>
+        <div class="module"><b>BYOD</b><small>Device and bill tracking</small></div>
+        <div class="module"><b>Mail Operations</b><small>G2 mails monitoring</small></div>
+      </div>
+      <p class="notice">These are starter screens only. Existing Electron desktop functions have not yet been ported to Android.</p>
+    </section>
+  </main>
+  <footer>Keep departmental data and credentials secure.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
