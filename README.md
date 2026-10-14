@@ -46,6 +46,16 @@ npx cap open android
 
 In Android Studio, allow Gradle sync, then select **Build → Build APK(s)**. This builds the current starter shell only; it does not mean the desktop integrations are ported.
 
+## Google Gemini AI setup
+
+TARA supports Google Gemini through the backend. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/app/apikey), then add it in Render as an environment variable named `GEMINI_API_KEY`. Keep the key on Render only; never put it in Android/web files or commit it to GitHub.
+
+Optional Render variables:
+- `TARA_AI_PROVIDER=gemini` (select Gemini explicitly; if omitted, Gemini is preferred when a Gemini key exists)
+- `GEMINI_MODEL=gemini-2.5-flash` (optional model override)
+
+After saving the environment variable, redeploy the Render service and test `/health`, then submit a test question in TARA. The API key may be subject to Google AI Studio usage limits, model availability, and billing/quota rules. A Google/Gemini subscription is not the same as API access.
+
 ## Security and AI
 
 - Never commit OpenAI/API keys, Supabase service-role keys, passwords, or private departmental data.
